@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Добавить товар</title>
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <h1>Добавьте свой товар на сайт!</h1>
+    <form method="post" enctype=multipart/form-data>
+
+        <input type=file name="file" id="file"><br>
+        <input type="text" class="form-control" name="title" id="title" placeholder="Заголовок товара"><br>
+        <input type="text" class="form-control" name="text" id="text" placeholder="Описание товара"><br>
+        <input type="text" class="form-control" name="price" id="price" placeholder="Цена товара"><br>
+        <button class="btn btn-success" type="submit">Опубликовать товар</button>
+
+    </form>
+</div>
+{% endblock body %}
