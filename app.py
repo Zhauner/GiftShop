@@ -21,6 +21,7 @@ class Item(db.Model):
     title = db.Column(db.String(100), nullable=False)
     text = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    extension = db.Column(db.String(10), nullable=False)
 
 
 with app.app_context():
@@ -43,9 +44,9 @@ def add_items():
         price = request.form['price']
         file = request.files['file']
 
-        item = Item(title=title, text=text, price=price)
-
         extensions = file.filename.split('.')[-1]
+
+        item = Item(title=title, text=text, price=price, extension=extensions)
 
         connect = sqlite3.connect('instance\\shop.db')
         cur = connect.cursor()
@@ -57,6 +58,14 @@ def add_items():
             for x in row:
                 count_rows.append(x)
 
+        if extensions not in allowed_extensions:
+            return redirect('/add_items.html')
+        elif title == '':
+            return redirect('/add_items.html')
+        elif text == '':
+            return redirect('/add_items.html')
+        elif price == '':
+            return redirect('/add_items.html')
 
         try:
 
