@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Авторизация</title>
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <h1>Авторизуйтесь на сайте GiftShop</h1>
+    <form method="post" enctype=multipart/form-data>
+
+        <input type="text" class="form-control" name="name" id="name" placeholder="Mail" required><br>
+        <input type="text" class="form-control" name="pswd" id="pswd" placeholder="Пароль" required><br>
+        <button class="btn btn-success" type="submit">Авторизация</button>
+        <br>
+        <a class="btn btn-warning" href="/reg">Регистрация</a>
+    </form>
+</div>
+{% endblock body %}

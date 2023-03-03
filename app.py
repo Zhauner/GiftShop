@@ -5,9 +5,10 @@ from flask import (
     redirect,
 )
 
-from flask_sqlalchemy import SQLAlchemy
 import os
 import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
@@ -24,6 +25,12 @@ class Item(db.Model):
     extension = db.Column(db.String(10), nullable=False)
 
 
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mail = db.Column(db.String(100), nullable=False)
+    passwrd = db.Column(db.String(20), nullable=False)
+
+
 with app.app_context():
     db.create_all()
 
@@ -31,6 +38,37 @@ with app.app_context():
 @app.route('/')
 def main():
     return render_template('index.html')
+
+
+@app.route('/autorization')
+def auth():
+    return render_template('login_form.html')
+
+
+@app.route('/reg', methods=['POST', 'GET'])
+def reg():
+    if request.method == 'POST':
+
+        mail = request.form['mail']
+        pswd = request.form['pswd']
+        ag_pswd = request.form['ag_pswd']
+        print(type(pswd))
+        if len(mail) > 100 or len(str(pswd)) > 20 or len(str(ag_pswd)) > 20 \
+                                                            or pswd != ag_pswd:
+
+            return redirect('/1312')
+
+        user = Users(mail=mail, passwrd=generate_password_hash(str(pswd)))
+
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return 'Ошибка регистрации'
+
+    else:
+        return render_template('register_form.html')
 
 
 @app.route('/add', methods=['POST', 'GET'])

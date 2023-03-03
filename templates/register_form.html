@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Регистрация</title>
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <h1>Зарегестрируйтесь и станьте частью GiftShop</h1>
+    <form method="post" enctype=multipart/form-data>
+
+        <input type="text" class="form-control" name="mail" id="mail" placeholder="Mail" required><br>
+        <input type="text" class="form-control" name="pswd" id="pswd" placeholder="Пароль" required><br>
+        <input type="text" class="form-control" name="ag_pswd" id="ag_pswd" placeholder="Повторите пароль" required><br>
+        <button class="btn btn-warning" type="submit">Зарегестрироваться</button>
+
+    </form>
+</div>
+{% endblock body %}
