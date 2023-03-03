@@ -49,16 +49,30 @@ def auth():
 def reg():
     if request.method == 'POST':
 
+        all_mails = []
+
         mail = request.form['mail']
         pswd = request.form['pswd']
         ag_pswd = request.form['ag_pswd']
-        print(type(pswd))
+
         if len(mail) > 100 or len(str(pswd)) > 20 or len(str(ag_pswd)) > 20 \
                                                             or pswd != ag_pswd:
 
             return redirect('/1312')
 
-        user = Users(mail=mail, passwrd=generate_password_hash(str(pswd)))
+        connect = sqlite3.connect('instance\\shop.db')
+        cursor = connect.cursor()
+        cursor.execute('SELECT mail FROM users')
+        rows = cursor.fetchall()
+
+        for row in rows:
+            for x in row:
+                all_mails.append(x)
+
+        if mail.strip() in all_mails:
+            return redirect('/1337')
+
+        user = Users(mail=mail.strip(), passwrd=generate_password_hash(str(pswd)))
 
         try:
             db.session.add(user)
