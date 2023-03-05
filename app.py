@@ -3,18 +3,31 @@ from flask import (
     render_template,
     request,
     redirect,
+    flash,
 )
 
 import os
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, login_user, login_required
+from UserLogin import UserLogin
+from getUserID import get_user_by_email
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = f'{os.getcwd()}\\images_of_items'
+app.config['SECRET_KEY'] = 'fgtqwert453345555345'
 db = SQLAlchemy(app)
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'auth'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return UserLogin().fromDB(user_id)
 
 
 class Item(db.Model):
@@ -40,9 +53,23 @@ def main():
     return render_template('index.html')
 
 
-@app.route('/autorization')
+@app.route('/autorization', methods=['POST', 'GET'])
 def auth():
-    return render_template('login_form.html')
+    if request.method == 'POST':
+
+        mail = request.form['name']
+        passwrd = request.form['pswd']
+
+        user = get_user_by_email(mail)
+
+        if user and check_password_hash(user[2], passwrd):
+            userLogin = UserLogin().create(user)
+            login_user(userLogin)
+            return redirect('/')
+        flash("Ок!!!", "success")
+
+    else:
+        return render_template('login_form.html')
 
 
 @app.route('/reg', methods=['POST', 'GET'])
@@ -81,11 +108,13 @@ def reg():
         except:
             return 'Ошибка регистрации'
 
+
     else:
         return render_template('register_form.html')
 
 
 @app.route('/add', methods=['POST', 'GET'])
+@login_required
 def add_items():
     if request.method == 'POST':
 
@@ -112,12 +141,6 @@ def add_items():
 
         if extensions not in allowed_extensions:
             return redirect('/add_items.html')
-        elif title == '':
-            return redirect('/add_items.html')
-        elif text == '':
-            return redirect('/add_items.html')
-        elif price == '':
-            return redirect('/add_items.html')
 
         try:
 
@@ -129,6 +152,7 @@ def add_items():
 
             db.session.add(item)
             db.session.commit()
+            flash("Все ок!", "success")
             return redirect('/')
         except:
             return 'Ошибка!'
