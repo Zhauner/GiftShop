@@ -15,10 +15,12 @@ from UserLogin import UserLogin
 from getUserID import get_user_by_email
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = f'{os.getcwd()}\\images_of_items'
 app.config['SECRET_KEY'] = 'fgtqwert453345555345'
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
