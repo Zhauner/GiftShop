@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = f'{os.getcwd()}\\images_of_items'
+app.config['UPLOAD_FOLDER'] = f'{os.getcwd()}\\static'
 app.config['SECRET_KEY'] = 'fgtqwert453345555345'
 
 db = SQLAlchemy(app)
@@ -52,7 +52,8 @@ with app.app_context():
 
 @app.route('/')
 def main():
-    return render_template('index.html')
+    items = Item.query.all()
+    return render_template('index.html', items=items)
 
 
 @app.route('/autorization', methods=['POST', 'GET'])
