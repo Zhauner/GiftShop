@@ -52,8 +52,14 @@ with app.app_context():
 
 @app.route('/')
 def main():
-    items = Item.query.all()
+    items = Item.query.order_by(Item.article.desc()).all()
     return render_template('index.html', items=items)
+
+
+@app.route('/<int:article>')
+def more(article):
+    item = Item.query.get(article)
+    return render_template('more_inf.html', item=item)
 
 
 @app.route('/autorization', methods=['POST', 'GET'])
