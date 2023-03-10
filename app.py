@@ -70,7 +70,7 @@ def buy():
     return 'Здесь должно быть окно оплаты'
 
 
-@app.route('/autorization', methods=['POST', 'GET'])
+@app.route('/auth', methods=['POST', 'GET'])
 def auth():
     if request.method == 'POST':
 
@@ -83,7 +83,9 @@ def auth():
             userLogin = UserLogin().create(user)
             login_user(userLogin)
             return redirect('/')
-        flash("Ок!!!", "success")
+
+        flash('Неправильный логин или пароль', 'error')
+        return redirect('/auth')
 
     else:
         return render_template('login_form.html')
@@ -101,8 +103,8 @@ def reg():
         name = request.form['name']
         number = request.form['number']
 
-        if len(mail) > 100 or len(str(pswd)) > 20 or len(str(ag_pswd)) > 20 \
-                                                            or pswd != ag_pswd:
+        if len(mail.strip()) > 100 or len(str(pswd.strip())) > 20 or len(str(ag_pswd.strip())) > 20 \
+                                                            or pswd.strip() != ag_pswd.strip():
 
             return redirect('/1312')
 
@@ -116,7 +118,12 @@ def reg():
                 all_mails.append(x)
 
         if mail.strip() in all_mails:
-            return redirect('/1337')
+            flash('Такой email уже существует', 'error')
+            return redirect('/reg')
+        elif not '@' in mail.strip() or not '.' in mail.strip():
+            flash('Неверный формат email', 'error')
+            return redirect('/reg')
+
 
         user = Users(
             mail=mail.strip(),
@@ -185,7 +192,6 @@ def add_items():
 
             db.session.add(item)
             db.session.commit()
-            flash("Все ок!", "success")
             return redirect('/')
         except:
             return 'Ошибка!'

@@ -7,6 +7,9 @@
 {% block body %}
 <div class="container">
     <h1>Авторизуйтесь на сайте GiftShop</h1>
+    {% for msg in get_flashed_messages() %}
+    <div class="flash">{{ msg }}</div>
+    {% endfor %}
     <form method="post" enctype=multipart/form-data>
 
         <input type="text" class="form-control" name="name" id="name" placeholder="Mail" required><br>
