@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>{{item.title}}</title>
+<title>{{ item.title }}</title>
 {% endblock title %}
 
 {% block body %}
-<h1>Чтото будет</h1>
+<div class="text-center">
+    <br>
+    <h3>Артикул: {{ item.article }}</h3>
+    <img src="/static/{{ item.article }}.{{ item.extension }}" width="300px" height="300px" class="rounded">
+    <br>
+    <p class="fw-bold">Описание: {{ item.text }}</p>
+    <br>
+    <p style="color:darkgreen;"><b>Номер продавца: {{ item.number }}</b></p>
+    <p style="color:darkgreen;"><b>Имя: {{ item.name }}</b></p>
+    <a type="button" href="/buy" class="btn btn-success">Купить</a>
+</div>
 {% endblock body %}

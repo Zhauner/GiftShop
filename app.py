@@ -7,12 +7,11 @@ from flask import (
 )
 
 import os
-import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, current_user
 from UserLogin import UserLogin
-from getUserID import get_user_by_email
+from getUserID import *
 
 app = Flask(__name__)
 
@@ -38,12 +37,16 @@ class Item(db.Model):
     text = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     extension = db.Column(db.String(10), nullable=False)
+    number = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(25), nullable=False)
 
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mail = db.Column(db.String(100), nullable=False)
     passwrd = db.Column(db.String(20), nullable=False)
+    number = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(25), nullable=False)
 
 
 with app.app_context():
@@ -60,6 +63,11 @@ def main():
 def more(article):
     item = Item.query.get(article)
     return render_template('more_inf.html', item=item)
+
+
+@app.route('/buy')
+def buy():
+    return 'Здесь должно быть окно оплаты'
 
 
 @app.route('/autorization', methods=['POST', 'GET'])
@@ -90,6 +98,8 @@ def reg():
         mail = request.form['mail']
         pswd = request.form['pswd']
         ag_pswd = request.form['ag_pswd']
+        name = request.form['name']
+        number = request.form['number']
 
         if len(mail) > 100 or len(str(pswd)) > 20 or len(str(ag_pswd)) > 20 \
                                                             or pswd != ag_pswd:
@@ -108,7 +118,12 @@ def reg():
         if mail.strip() in all_mails:
             return redirect('/1337')
 
-        user = Users(mail=mail.strip(), passwrd=generate_password_hash(str(pswd)))
+        user = Users(
+            mail=mail.strip(),
+            passwrd=generate_password_hash(str(pswd)),
+            name=name.strip(),
+            number=number.strip()
+        )
 
         try:
             db.session.add(user)
@@ -133,10 +148,19 @@ def add_items():
         text = request.form['text']
         price = request.form['price']
         file = request.files['file']
+        name = get_user(int(current_user.get_id()))[4]
+        number = get_user(int(current_user.get_id()))[3]
 
         extensions = file.filename.split('.')[-1]
 
-        item = Item(title=title, text=text, price=price, extension=extensions)
+        item = Item(
+            title=title,
+            text=text,
+            price=price,
+            extension=extensions,
+            name=name,
+            number=number
+        )
 
         connect = sqlite3.connect('instance\\shop.db')
         cur = connect.cursor()

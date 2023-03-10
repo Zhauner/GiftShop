@@ -28,13 +28,13 @@
         {% for item in items %}
         <div class="col">
           <div class="card shadow-sm">
-            <img src="/static/{{ item.article }}.{{ item.extension }}" height="225px" alt="">
+            <img src="/static/{{ item.article }}.{{ item.extension }}" height="225px" width="359px" alt="">
             <div class="card-body">
               <p class="card-text">{{ item.title }}</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <a href="/{{ item.article }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Купить</button>
+                  <a href="/buy" type="button" class="btn btn-sm btn-outline-secondary">Купить</a>
                 </div>
                 <small class="text-muted">{{ item.price }} BYN</small>
               </div>
