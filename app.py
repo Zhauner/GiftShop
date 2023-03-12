@@ -105,8 +105,12 @@ def reg():
 
         if len(mail.strip()) > 100 or len(str(pswd.strip())) > 20 or len(str(ag_pswd.strip())) > 20 \
                                                             or pswd.strip() != ag_pswd.strip():
-
-            return redirect('/1312')
+            flash(
+                'Проверьте длину(email <= 100 символов, пароль <= 20 \
+                символов) либо совпадение паролей',
+                'error'
+            )
+            return redirect('/reg')
 
         connect = sqlite3.connect('instance\\shop.db')
         cursor = connect.cursor()
