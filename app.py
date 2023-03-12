@@ -4,6 +4,7 @@ from flask import (
     request,
     redirect,
     flash,
+    url_for,
 )
 
 import os
@@ -67,7 +68,7 @@ def more(article):
 
 @app.route('/buy')
 def buy():
-    return 'Здесь должно быть окно оплаты'
+    return '[Здесь должно быть окно оплаты]'
 
 
 @app.route('/auth', methods=['POST', 'GET'])
@@ -84,7 +85,7 @@ def auth():
             login_user(userLogin)
             return redirect('/')
 
-        flash('Неправильный логин или пароль', 'error')
+        flash('Неправильный логин или пароль', category='error')
         return redirect('/auth')
 
     else:
@@ -108,7 +109,7 @@ def reg():
             flash(
                 'Проверьте длину(email <= 100 символов, пароль <= 20 \
                 символов) либо совпадение паролей',
-                'error'
+                category='error'
             )
             return redirect('/reg')
 
@@ -122,10 +123,10 @@ def reg():
                 all_mails.append(x)
 
         if mail.strip() in all_mails:
-            flash('Такой email уже существует', 'error')
+            flash('Такой email уже существует', category='error')
             return redirect('/reg')
         elif not '@' in mail.strip() or not '.' in mail.strip():
-            flash('Неверный формат email', 'error')
+            flash('Неверный формат email', category='error')
             return redirect('/reg')
 
 
