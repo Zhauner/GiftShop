@@ -11,6 +11,10 @@
 
 {% block body %}
 
+{% for category, msg in get_flashed_messages(True) %}
+<div class="flash {{ category }}">{{ msg }}</div>
+{% endfor %}
+
 <main>
 
   <section class="py-5 text-center container">

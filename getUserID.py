@@ -3,9 +3,12 @@ import sqlite3
 
 def get_user(id: int):
 
-    connect = sqlite3.connect('instance\\shop.db')
-    cursor = connect.cursor()
-    cursor.execute(f'SELECT * FROM users WHERE id = {id} LIMIT 1')
+    try:
+        connect = sqlite3.connect('instance\\shop.db')
+        cursor = connect.cursor()
+        cursor.execute(f'SELECT * FROM users WHERE id = {id} LIMIT 1')
+    except:
+        return ''
 
     try:
         res = cursor.fetchone()
@@ -33,3 +36,14 @@ def get_user_by_email(mail: str):
         return res
     except:
         return 'Ошибка'
+
+
+def get_username(id: int):
+
+    try:
+        if get_user(id)[4] and get_user(id)[4] != 'з':
+            return get_user(id)[4]
+        else:
+            return ''
+    except:
+        return ''

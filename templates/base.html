@@ -20,6 +20,9 @@
         <a class="me-3 py-2 text-decoration-none" href="/">Главная</a>
         <a class="me-3 py-2 text-decoration-none" href="/auth">Авторизация</a>
         <a class="py-2 text-white text-decoration-none" href="/add">Добавить товар</a>
+        {% if current_user.get_id() != None %}
+            <a class="me-3 py-2 text-decoration-none" style="margin-left: 12px; color:red" href="/logout">Выйти из аккаунта({{ get_user }})</a>
+        {% endif %}
     </nav>
 
     </div>

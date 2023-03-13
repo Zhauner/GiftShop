@@ -4,3 +4,8 @@
     border: 1px solid #FF4343;
     background: #FF9C9C;
 }
+
+.flash.success {
+    border: 1px solid #008000;
+    background: #32CD32;
+}

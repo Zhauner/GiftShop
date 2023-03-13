@@ -7,12 +7,13 @@ from flask import (
     url_for,
 )
 
+import sqlite3
 import os
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from UserLogin import UserLogin
-from getUserID import *
+from getUserID import get_user, get_user_by_email, get_username
 
 app = Flask(__name__)
 
@@ -57,18 +58,26 @@ with app.app_context():
 @app.route('/')
 def main():
     items = Item.query.order_by(Item.article.desc()).all()
-    return render_template('index.html', items=items)
+    return render_template('index.html', items=items, get_user=get_username(current_user.get_id()))
 
 
 @app.route('/<int:article>')
 def more(article):
     item = Item.query.get(article)
-    return render_template('more_inf.html', item=item)
+    return render_template('more_inf.html', item=item, get_user=get_username(current_user.get_id()))
 
 
 @app.route('/buy')
 def buy():
     return '[Здесь должно быть окно оплаты]'
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Вы вышли из системы!', category='success')
+    return redirect('/')
 
 
 @app.route('/auth', methods=['POST', 'GET'])
@@ -89,7 +98,7 @@ def auth():
         return redirect('/auth')
 
     else:
-        return render_template('login_form.html')
+        return render_template('login_form.html', get_user=get_username(current_user.get_id()))
 
 
 @app.route('/reg', methods=['POST', 'GET'])
@@ -146,7 +155,7 @@ def reg():
 
 
     else:
-        return render_template('register_form.html')
+        return render_template('register_form.html', get_user=get_username(current_user.get_id()))
 
 
 @app.route('/add', methods=['POST', 'GET'])
@@ -202,7 +211,7 @@ def add_items():
             return 'Ошибка!'
 
     else:
-        return render_template('add_items.html')
+        return render_template('add_items.html', get_user=get_username(current_user.get_id()))
 
 
 if __name__ == '__main__':
