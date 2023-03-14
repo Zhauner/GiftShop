@@ -114,9 +114,10 @@ def reg():
         number = request.form['number']
 
         if len(mail.strip()) > 100 or len(str(pswd.strip())) > 20 or len(str(ag_pswd.strip())) > 20 \
-                                                            or pswd.strip() != ag_pswd.strip():
+                or len(str(pswd.strip())) < 5 or len(str(ag_pswd.strip())) < 5 \
+                or pswd.strip() != ag_pswd.strip():
             flash(
-                'Проверьте длину(email <= 100 символов, пароль <= 20 \
+                'Проверьте длину(email <= 100 символов, 5 <= пароль <= 20 \
                 символов) либо совпадение паролей',
                 category='error'
             )
@@ -155,7 +156,10 @@ def reg():
 
 
     else:
-        return render_template('register_form.html', get_user=get_username(current_user.get_id()))
+        return render_template(
+            'register_form.html',
+            get_user=get_username(current_user.get_id())
+        )
 
 
 @app.route('/add', methods=['POST', 'GET'])
